@@ -51,6 +51,9 @@
 #elif defined(_SAM3XA_)
   #include <UARTClass.h>  // Arduino Due
   #define SERIAL_CLASS UARTClass
+#elif defined(USE_REDBOARD_TURBO_USB)
+  #include <USB/USBAPI.h>
+  #define SERIAL_CLASS Serial_
 #elif defined(USE_USBCON)
   // Arduino Leonardo USB Serial Port
   #define SERIAL_CLASS Serial_
@@ -70,9 +73,11 @@ class ArduinoHardware {
     }
     ArduinoHardware()
     {
-#if defined(USBCON) and !(defined(USE_USBCON))
+#if defined(USBCON) and !(defined(USE_USBCON)) and !(defined(USE_REDBOARD_TURBO_USB))
       /* Leonardo support */
       iostream = &Serial1;
+#elif defined(USE_REDBOARD_TURBO_USB)
+      iostream = &SerialUSB;
 #elif defined(USE_TEENSY_HW_SERIAL) or defined(USE_STM32_HW_SERIAL)
       iostream = &Serial1;
 #else
